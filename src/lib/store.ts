@@ -38,9 +38,9 @@ export const useChatStore = create<ChatState>()(
           updatedAt: Date.now()
         };
         
-        // Usando uma função para atualizar o estado para evitar loops de renderização
+        // Using a function to update state to avoid rendering loops
         set((state) => {
-          // Verificamos se a sessão já existe para evitar duplicações
+          // Check if session already exists to prevent duplication
           const sessionExists = state.sessions.some(session => session.id === id);
           if (sessionExists) {
             return state;
@@ -121,16 +121,18 @@ export const useChatStore = create<ChatState>()(
                 
                 // If this is the first message, generate a title
                 if (session.messages.length <= 1) {
-                  // Usando uma Promise sem state update dentro
-                  generateTitle([userMessage]).then(title => {
-                    if (title) {
-                      set(state => ({
-                        sessions: state.sessions.map(s => 
-                          s.id === sessionId ? { ...s, title } : s
-                        )
-                      }));
-                    }
-                  });
+                  // Use a Promise without state updates inside the main update
+                  setTimeout(() => {
+                    generateTitle([userMessage]).then(title => {
+                      if (title) {
+                        set(state => ({
+                          sessions: state.sessions.map(s => 
+                            s.id === sessionId ? { ...s, title } : s
+                          )
+                        }));
+                      }
+                    });
+                  }, 0);
                 }
                 
                 return updatedSession;
@@ -193,7 +195,7 @@ export const useChatStore = create<ChatState>()(
       },
       
       getAllSessions: () => {
-        return get().sessions.sort((a, b) => b.updatedAt - a.updatedAt);
+        return get().sessions;
       }
     }),
     {

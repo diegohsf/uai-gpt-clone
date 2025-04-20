@@ -3,42 +3,39 @@ import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/lib/store";
 import { PlusIcon, MessageCircle, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCallback } from "react";
 
 interface SidebarProps {
   onSelectChat?: () => void;
 }
 
 export default function Sidebar({ onSelectChat }: SidebarProps) {
-  const { 
-    sessions, 
-    currentSessionId, 
-    createNewSession, 
-    setCurrentSession, 
-    deleteSession 
-  } = useChatStore((state) => ({
-    sessions: state.getAllSessions(),
-    currentSessionId: state.currentSessionId,
-    createNewSession: state.createNewSession,
-    setCurrentSession: state.setCurrentSession,
-    deleteSession: state.deleteSession
-  }));
+  // Use separate selectors for each piece of state to avoid unnecessary re-renders
+  const sessions = useChatStore(state => state.sessions);
+  const currentSessionId = useChatStore(state => state.currentSessionId);
+  const createNewSession = useChatStore(state => state.createNewSession);
+  const setCurrentSession = useChatStore(state => state.setCurrentSession);
+  const deleteSession = useChatStore(state => state.deleteSession);
   
-  const handleNewChat = () => {
+  // Format sessions outside the render to not create a new array on each render
+  const sortedSessions = sessions.slice().sort((a, b) => b.updatedAt - a.updatedAt);
+  
+  const handleNewChat = useCallback(() => {
     createNewSession();
     onSelectChat?.();
-  };
+  }, [createNewSession, onSelectChat]);
   
-  const handleSelectSession = (sessionId: string) => {
+  const handleSelectSession = useCallback((sessionId: string) => {
     setCurrentSession(sessionId);
     onSelectChat?.();
-  };
+  }, [setCurrentSession, onSelectChat]);
   
-  const formatDate = (timestamp: number) => {
+  const formatDate = useCallback((timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('pt-BR', {
       day: 'numeric',
       month: 'short'
     });
-  };
+  }, []);
   
   return (
     <div className="h-full flex flex-col bg-uai-dark text-white border-r">
@@ -52,7 +49,7 @@ export default function Sidebar({ onSelectChat }: SidebarProps) {
       </div>
       
       <div className="flex-1 overflow-y-auto space-y-1 p-2">
-        {sessions.map((session) => (
+        {sortedSessions.map((session) => (
           <div 
             key={session.id} 
             className={cn(
