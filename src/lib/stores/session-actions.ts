@@ -63,4 +63,5 @@ export const createSessionActions = (
       sessions: [],
       currentSessionId: null
     });
-  },
+  }
+});
