@@ -35,7 +35,8 @@ export const createSessionActions = (
   },
 
   setCurrentSession: (sessionId: string) => {
-    set({ currentSessionId: sessionId } as Partial<ChatState>);
+    // Fix: Pass a function that returns an object instead of directly passing an object
+    set(state => ({ currentSessionId: sessionId }));
   },
 
   deleteSession: (sessionId: string) => {
@@ -59,9 +60,10 @@ export const createSessionActions = (
   },
 
   clearSessions: () => {
-    set({
+    // Fix: Pass a function that returns an object instead of directly passing an object
+    set(state => ({
       sessions: [],
       currentSessionId: null
-    } as Partial<ChatState>);
+    }));
   }
 });

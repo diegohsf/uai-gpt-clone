@@ -90,10 +90,11 @@ export const createMessageActions = (
       
     } catch (error) {
       console.error("Error in sendMessage:", error);
-      set({ 
+      // Fix: Pass a function that returns an object instead of directly passing an object
+      set(state => ({ 
         isLoading: false, 
         error: error instanceof Error ? error.message : "Erro desconhecido" 
-      } as Partial<ChatState>);
+      }));
     }
   },
 });
