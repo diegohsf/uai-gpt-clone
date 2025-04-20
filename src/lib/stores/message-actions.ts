@@ -5,7 +5,7 @@ import { ChatState } from '../types/chat-store';
 import { generateChatResponse, generateTitle } from '../openai';
 
 export const createMessageActions = (
-  set: StateCreator<ChatState>['setState'],
+  set: (fn: (state: ChatState) => Partial<ChatState>) => void,
   get: () => ChatState
 ) => ({
   sendMessage: async (content: string) => {
@@ -93,7 +93,7 @@ export const createMessageActions = (
       set({ 
         isLoading: false, 
         error: error instanceof Error ? error.message : "Erro desconhecido" 
-      });
+      } as Partial<ChatState>);
     }
   },
 });

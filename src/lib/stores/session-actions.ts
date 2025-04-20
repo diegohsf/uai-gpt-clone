@@ -5,7 +5,7 @@ import { ChatState } from '../types/chat-store';
 import { generateChatResponse, generateTitle } from '../openai';
 
 export const createSessionActions = (
-  set: StateCreator<ChatState>['setState'],
+  set: (fn: (state: ChatState) => Partial<ChatState>) => void,
   get: () => ChatState
 ) => ({
   createNewSession: async () => {
@@ -35,7 +35,7 @@ export const createSessionActions = (
   },
 
   setCurrentSession: (sessionId: string) => {
-    set({ currentSessionId: sessionId });
+    set({ currentSessionId: sessionId } as Partial<ChatState>);
   },
 
   deleteSession: (sessionId: string) => {
@@ -62,6 +62,6 @@ export const createSessionActions = (
     set({
       sessions: [],
       currentSessionId: null
-    });
+    } as Partial<ChatState>);
   }
 });

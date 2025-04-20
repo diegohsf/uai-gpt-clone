@@ -3,7 +3,7 @@ import { StateCreator } from 'zustand';
 import { ChatState } from '../types/chat-store';
 
 export const createSessionSelectors = (
-  set: StateCreator<ChatState>['setState'],
+  set: (fn: (state: ChatState) => Partial<ChatState>) => void,
   get: () => ChatState
 ) => ({
   getCurrentSession: () => {
