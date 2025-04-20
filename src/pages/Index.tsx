@@ -12,11 +12,18 @@ const Index = () => {
   const createNewSession = useChatStore((state) => state.createNewSession);
   const currentSessionId = useChatStore((state) => state.currentSessionId);
 
+  // Usamos um useEffect para criar uma nova sessão apenas se não existir
   useEffect(() => {
-    if (!currentSessionId) {
-      createNewSession();
-    }
-  }, [currentSessionId, createNewSession]);
+    const initializeChat = async () => {
+      if (!currentSessionId) {
+        await createNewSession();
+      }
+    };
+    
+    initializeChat();
+    // Adicionamos createNewSession como dependência para evitar warnings
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSessionId]);
 
   return (
     <div className="flex h-screen bg-white dark:bg-uai-dark">

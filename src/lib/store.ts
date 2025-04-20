@@ -38,11 +38,20 @@ export const useChatStore = create<ChatState>()(
           updatedAt: Date.now()
         };
         
-        set(state => ({
-          sessions: [newSession, ...state.sessions],
-          currentSessionId: id,
-          error: null
-        }));
+        // Usando uma função para atualizar o estado para evitar loops de renderização
+        set((state) => {
+          // Verificamos se a sessão já existe para evitar duplicações
+          const sessionExists = state.sessions.some(session => session.id === id);
+          if (sessionExists) {
+            return state;
+          }
+          
+          return {
+            sessions: [newSession, ...state.sessions],
+            currentSessionId: id,
+            error: null
+          };
+        });
         
         return id;
       },
@@ -112,12 +121,15 @@ export const useChatStore = create<ChatState>()(
                 
                 // If this is the first message, generate a title
                 if (session.messages.length <= 1) {
+                  // Usando uma Promise sem state update dentro
                   generateTitle([userMessage]).then(title => {
-                    set(state => ({
-                      sessions: state.sessions.map(s => 
-                        s.id === sessionId ? { ...s, title } : s
-                      )
-                    }));
+                    if (title) {
+                      set(state => ({
+                        sessions: state.sessions.map(s => 
+                          s.id === sessionId ? { ...s, title } : s
+                        )
+                      }));
+                    }
                   });
                 }
                 
