@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import { useChatStore } from "@/lib/store";
+import { useToast } from "@/hooks/use-toast";
 
 interface ErrorDisplayProps {
   message?: string;
@@ -10,8 +11,13 @@ interface ErrorDisplayProps {
 export default function ErrorDisplay({ message }: ErrorDisplayProps) {
   const error = useChatStore((state) => state.error);
   const createNewSession = useChatStore((state) => state.createNewSession);
+  const { toast } = useToast();
 
   const handleRetry = () => {
+    toast({
+      title: "Tentando novamente",
+      description: "Criando uma nova sessão de chat",
+    });
     createNewSession();
   };
 

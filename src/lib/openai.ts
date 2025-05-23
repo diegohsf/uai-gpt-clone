@@ -1,7 +1,7 @@
 
 import { Message } from "@/types/chat";
 
-const API_KEY = "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";
+const API_KEY = "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";
 const API_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
 export async function generateChatResponse(messages: Message[]): Promise<string> {
