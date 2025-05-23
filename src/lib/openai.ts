@@ -1,8 +1,8 @@
 
 import { Message } from "@/types/chat";
 
-const API_KEY = "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";
-const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+const API_KEY = "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";
+const API_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
 export async function generateChatResponse(messages: Message[]): Promise<string> {
   try {
@@ -13,24 +13,30 @@ export async function generateChatResponse(messages: Message[]): Promise<string>
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        models: [
+          "anthropic/claude-sonnet-4",
+          "google/gemini-pro-1.5", 
+          "openai/gpt-4.1-mini"
+        ],
         messages: messages.map(msg => ({
           role: msg.role,
           content: msg.content,
         })),
-        temperature: 0.7,
+        temperature: 0.1,
+        max_tokens: 1000000,
+        top_p: 1
       }),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || "Erro na API da OpenAI");
+      throw new Error(error.error?.message || "Erro na API do OpenRouter");
     }
 
     const data = await response.json();
     return data.choices[0].message.content;
   } catch (error) {
-    console.error("Erro ao chamar a API OpenAI:", error);
+    console.error("Erro ao chamar a API OpenRouter:", error);
     throw error;
   }
 }
