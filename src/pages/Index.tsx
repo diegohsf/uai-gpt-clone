@@ -11,12 +11,21 @@ const Index = () => {
   const isMobile = useIsMobile();
   const createNewSession = useChatStore((state) => state.createNewSession);
   const currentSessionId = useChatStore((state) => state.currentSessionId);
+  const sessions = useChatStore((state) => state.sessions);
+
+  // Log store state for debugging
+  useEffect(() => {
+    console.log("Chat sessions loaded:", sessions.length);
+  }, [sessions]);
 
   // Usamos um useEffect para criar uma nova sessão apenas se não existir
   useEffect(() => {
     const initializeChat = async () => {
       if (!currentSessionId) {
+        console.log("No current session, creating a new one");
         await createNewSession();
+      } else {
+        console.log("Current session exists:", currentSessionId);
       }
     };
     

@@ -35,7 +35,6 @@ export const createSessionActions = (
   },
 
   setCurrentSession: (sessionId: string) => {
-    // Fix: Pass a function that returns an object instead of directly passing an object
     set(state => ({ currentSessionId: sessionId }));
   },
 
@@ -60,7 +59,6 @@ export const createSessionActions = (
   },
 
   clearSessions: () => {
-    // Fix: Pass a function that returns an object instead of directly passing an object
     set(state => ({
       sessions: [],
       currentSessionId: null

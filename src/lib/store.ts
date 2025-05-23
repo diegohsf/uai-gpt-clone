@@ -1,6 +1,6 @@
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { ChatState } from './types/chat-store';
 import { createSessionActions } from './stores/session-actions';
 import { createMessageActions } from './stores/message-actions';
@@ -19,7 +19,12 @@ export const useChatStore = create<ChatState>()(
       ...createSessionSelectors(set, get)
     }),
     {
-      name: 'uai-gpt-chat-storage'
+      name: 'uai-gpt-chat-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        sessions: state.sessions,
+        currentSessionId: state.currentSessionId
+      }),
     }
   )
 );
